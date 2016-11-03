@@ -8111,20 +8111,22 @@ void File_Mxf::XmlDocumentText()
 //---------------------------------------------------------------------------
 void File_Mxf::SubDescriptors()
 {
-    Descriptors[InstanceUID].SubDescriptors.clear();
+    descriptor& descItem = Descriptors[InstanceUID];
+    descItem.SubDescriptors.clear();
 
     //Parsing
     //Vector
     int32u Count, Length;
     Get_B4 (Count,                                              "Count");
     Get_B4 (Length,                                             "Length");
+    descItem.SubDescriptors.reserve(Count);
     for (int32u Pos=0; Pos<Count; Pos++)
     {
         int128u Data;
         Get_UUID(Data,                                          "Sub Descriptor");
 
         FILLING_BEGIN();
-            Descriptors[InstanceUID].SubDescriptors.push_back(Data);
+        descItem.SubDescriptors.push_back(Data);
         FILLING_END();
     }
 }
@@ -10278,13 +10280,15 @@ void File_Mxf::NetworkLocator_URLString()
 // 0x3F01
 void File_Mxf::MultipleDescriptor_SubDescriptorUIDs()
 {
-    Descriptors[InstanceUID].SubDescriptors.clear();
+    descriptor& descItem = Descriptors[InstanceUID];
+    descItem.SubDescriptors.clear();
 
     //Parsing
     //Vector
     int32u Count, Length;
     Get_B4 (Count,                                              "Count");
     Get_B4 (Length,                                             "Length");
+    descItem.SubDescriptors.reserve(Count);
     for (int32u Pos=0; Pos<Count; Pos++)
     {
         //Parsing
@@ -10292,7 +10296,7 @@ void File_Mxf::MultipleDescriptor_SubDescriptorUIDs()
         Get_UUID(Data,                                          "UUID");
 
         FILLING_BEGIN();
-            Descriptors[InstanceUID].SubDescriptors.push_back(Data);
+            descItem.SubDescriptors.push_back(Data);
             Descriptors[Data].Infos["StreamOrder"].From_Number(Pos);
         FILLING_END();
     }
